@@ -17,8 +17,7 @@ overfitting是机器学习中常见的问题，就是过度学习，过度拟合
 
 <img class="course-image" src="/static/results/tensorflow/5_02_1.png">
 
-图中黑色曲线是正常模型，绿色曲线就是overfitting模型。尽管绿色曲线很精确的区分了所有的训练数据，但是
-并没有描述数据的整体特征，对新测试数据的适应性较差。
+图中黑色曲线是正常模型，绿色曲线就是overfitting模型。尽管绿色曲线很精确的区分了所有的训练数据，但是并没有描述数据的整体特征，对新测试数据的适应性较差。
 
 举个Regression (回归)的例子，
 
@@ -54,7 +53,7 @@ l1 = add_layer(xs, 64, 50, 'l1', activation_function=tf.nn.tanh)
 prediction = add_layer(l1, 50, 10, 'l2', activation_function=tf.nn.softmax)
 ```
 
-loss函数（即最优化目标函数）选用交叉熵函数。交叉熵用来衡量预测值和真实值的相似程度，如果完全相同，它们的交叉熵等于零。
+loss函数（即最优化目标函数）选用交叉熵函数。交叉熵用来衡量预测值和真实值的相似程度，如果完全相同，交叉熵就等于零。
 
 ```python
 cross_entropy = tf.reduce_mean(-tf.reduce_sum(ys * tf.log(prediction),
@@ -73,22 +72,14 @@ sess.run(train_step, feed_dict={xs: X_train, ys: y_train, keep_prob: 0.5})
 ```
 
 训练中keep_prob=1时，就可以暴露出overfitting问题。keep_prob=0.5时，dropout就发挥了作用。
-我们可以训练两次对比一下结果。
+我们可以两种参数分别运行程序，对比一下结果。
+当keep_prob=1时，模型对训练数据的适应性优于测试数据，存在overfitting，输出如下：
 
-每训练50次输出一下预测精度
+<img class="course-image" src="/static/results/tensorflow/5_02_3.png">
 
-```python
-if i % 50 == 0:
-        # record loss
-        train_result = sess.run(merged, feed_dict={xs: X_train, ys: y_train, keep_prob: 1})
-        test_result = sess.run(merged, feed_dict={xs: X_test, ys: y_test, keep_prob: 1})
-        train_writer.add_summary(train_result, i)
-	test_writer.add_summary(test_result, i)
-```
+当keep_prob=0.5时效果好了很多，输出如下：
 
-输出结果如下：
-
-<img class="course-image" src="/static/results/tensorflow/5_01_3.png">
+<img class="course-image" src="/static/results/tensorflow/5_02_4.png">
 
 程序中用到了Tensorboard输出结果，可以参考前面教程----可视化好助手 Tensorboard部分。
 
